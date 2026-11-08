@@ -11,6 +11,14 @@ npm run dev        # http://localhost:5173
 npm run build      # build de producción en dist/ (se puede abrir con npm run preview)
 ```
 
+## Publicación (GitHub Pages)
+Sitio: https://matias2309.github.io/NudoyHebra/
+
+- Cada push a `main` ejecuta `.github/workflows/deploy.yml`: `npm ci` → `npm run build` → publica **solo `dist/`**. También se puede lanzar a mano desde *Actions → Deploy to GitHub Pages → Run workflow*.
+- Requisito (una vez): *Settings → Pages → Source: **GitHub Actions***.
+- El build usa `base: "/NudoyHebra/"` (`vite.config.ts`) y el router es `HashRouter`, así que las rutas (`/#/a/revista/...`) funcionan sin configuración extra del servidor.
+- Probar el build localmente: `npm run build && npm run preview` → http://localhost:4173/NudoyHebra/
+
 ## Cómo recorrer las propuestas
 - `/#/`: **comparador**. Presenta las propuestas A, B y C con qué transmite cada una y sus ventajas.
 - `/#/a`, `/#/b`, `/#/c`: el inicio de cada propuesta.
