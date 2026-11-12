@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { getCollections, getProducts } from "../../data/catalogApi";
 import { useAsync, useDocumentTitle } from "../../lib/hooks";
-import { Img, Price } from "../../components/shared";
+import { Badges, Img, Price } from "../../components/shared";
 import { CoverPreview } from "../../magazine/templates/Pages";
 import { BRAND } from "../../variants";
 
@@ -85,6 +85,7 @@ export function HomeA() {
             <article key={p.id} className={`a-product a-product--${i + 1}`}>
               <figure className="a-product__fig">
                 <Img id={p.images[0]} alt="" />
+                <Badges product={p} className="a-product__badges" />
               </figure>
               <div className="a-product__text">
                 <h3 className="a-product__name">

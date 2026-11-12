@@ -16,6 +16,7 @@ export const products: Product[] = [
     price: 34990, // DEMO
     showPrice: true,
     technique: "Macramé",
+    badges: ["Hecho a mano", "Con luz LED"],
     features: [
       "Cordón textil grueso en verde bosque",
       "Luces LED azules integradas",
@@ -33,6 +34,7 @@ export const products: Product[] = [
     price: 32990, // DEMO — oculto en la interfaz (showPrice: false)
     showPrice: false,
     technique: "Macramé",
+    badges: ["Hecho a mano"],
     features: [
       "Cordón textil en rosa empolvado",
       "Estrella calada de madera natural",

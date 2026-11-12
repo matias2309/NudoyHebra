@@ -56,6 +56,20 @@ export function Price({ product, className }: { product: PublicProduct; classNam
   );
 }
 
+/* ---------- Sellos («Hecho a mano», «Con luz LED») ---------- */
+export function Badges({ product, className }: { product: PublicProduct; className?: string }) {
+  if (!product.badges?.length) return null;
+  return (
+    <ul className={`badges ${className ?? ""}`} aria-label="Características destacadas">
+      {product.badges.map((b) => (
+        <li key={b} className="badge">
+          {b}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /* ---------- Espacio reservado para fotos futuras ---------- */
 export function PhotoPending({ label = "Pieza por fotografiar" }: { label?: string }) {
   return (

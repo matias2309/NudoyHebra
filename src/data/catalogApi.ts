@@ -41,3 +41,8 @@ export async function getCollection(id: string): Promise<CollectionWithProducts 
 export async function getProducts(): Promise<PublicProduct[]> {
   return delay(mockProducts.map(toPublicProduct));
 }
+
+export async function getProduct(id: string): Promise<PublicProduct | null> {
+  const p = mockProducts.find((x) => x.id === id);
+  return delay(p ? toPublicProduct(p) : null);
+}

@@ -6,6 +6,15 @@ export const BRAND = {
   note: "Nombre y marca provisionales",
 };
 
+/**
+ * Canales de contacto. Mientras whatsapp sea null, «Consultar esta pieza» lleva a la página
+ * de contacto con la pieza precargada. Formato futuro: solo dígitos con código de país.
+ */
+export const CONTACT: { whatsapp: string | null } = { whatsapp: null };
+
+export const inquiryMessage = (productName: string) =>
+  `Hola, me interesa la pieza «${productName}». ¿Está disponible?`;
+
 export type VariantMeta = {
   id: VariantId;
   letter: string;

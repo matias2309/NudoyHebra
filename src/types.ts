@@ -27,6 +27,8 @@ export type Product = {
   /** Solo características observables en las fotos; nada inventado. */
   features: string[];
   technique?: string;
+  /** Sellos breves y verificables en la descripción o las fotos (ej. "Hecho a mano"). */
+  badges?: string[];
 };
 
 /**

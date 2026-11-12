@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Collection, MagazinePage, PublicProduct, Slot } from "../../types";
-import { Img, PhotoPending, Price, pad2, roman, useVariant } from "../../components/shared";
+import { Badges, Img, PhotoPending, Price, pad2, roman, useVariant } from "../../components/shared";
 import { BRAND } from "../../variants";
 
 /**
@@ -44,6 +45,7 @@ function ProductSlot({ slot, ctx, i }: { slot: Slot; ctx: PageCtx; i: number }) 
     <figure className={`slot slot--${i}`}>
       <div className="slot__media">
         <Img id={p.images[0]} alt="" />
+        <Badges product={p} className="slot__badges" />
       </div>
       <figcaption className="slot__text">
         <h3 className="slot__name">
@@ -53,6 +55,62 @@ function ProductSlot({ slot, ctx, i }: { slot: Slot; ctx: PageCtx; i: number }) 
         </h3>
         <p className="slot__desc">{firstSentence(p.description)}</p>
         <Price product={p} />
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Pieza destacada: foto principal + miniaturas (si hay varias fotos) + cartela. */
+function FeaturePage({
+  product: p,
+  kicker,
+  headline,
+  ctx,
+}: {
+  product: PublicProduct;
+  kicker?: string;
+  headline: string;
+  ctx: PageCtx;
+}) {
+  const [active, setActive] = useState(0);
+  const current = p.images[active] ?? p.images[0];
+  return (
+    <figure className="ft">
+      <div className="ft__media">
+        <Img id={current} alt="" key={current} />
+        <Badges product={p} className="ft__badges" />
+      </div>
+      {p.images.length > 1 && (
+        <ul className="ft__thumbs" aria-label={`Fotografías de ${p.name}`}>
+          {p.images.map((img, i) => (
+            <li key={img}>
+              <button
+                type="button"
+                onClick={() => setActive(i)}
+                aria-pressed={i === active}
+                aria-label={`Ver fotografía ${i + 1} de ${p.images.length}`}
+              >
+                <Img id={img} alt="" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <figcaption className="ft__text">
+        {kicker && <p className="kicker">{kicker}</p>}
+        <h2 className="pg-title ft__headline">{headline}</h2>
+        <h3 className="ft__name">
+          <button type="button" className="stretch" onClick={() => ctx.onSelect(p.id)}>
+            {p.name}
+          </button>
+        </h3>
+        <p className="ft__desc">{firstSentence(p.description)}</p>
+        <div className="ft__foot">
+          <Price product={p} />
+          <span className="ft__more" aria-hidden="true">
+            Ver detalle
+          </span>
+        </div>
       </figcaption>
     </figure>
   );
@@ -145,27 +203,7 @@ export function PageView({
     case "feature": {
       const p = ctx.products[page.productId];
       if (!p) break;
-      body = (
-        <figure className="ft">
-          <div className="ft__media">
-            <Img id={p.images[0]} alt="" />
-          </div>
-          <figcaption className="ft__text">
-            {page.kicker && <p className="kicker">{page.kicker}</p>}
-            <h2 className="pg-title ft__headline">{page.headline}</h2>
-            <h3 className="ft__name">
-              <button type="button" className="stretch" onClick={() => ctx.onSelect(p.id)}>
-                {p.name}
-              </button>
-            </h3>
-            <p className="ft__desc">{firstSentence(p.description)}</p>
-            <Price product={p} />
-            <span className="ft__more" aria-hidden="true">
-              Ver detalle
-            </span>
-          </figcaption>
-        </figure>
-      );
+      body = <FeaturePage product={p} kicker={page.kicker} headline={page.headline} ctx={ctx} />;
       break;
     }
     case "duo":

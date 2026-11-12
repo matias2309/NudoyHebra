@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
-import { getCollections } from "../data/catalogApi";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { getCollections, getProduct } from "../data/catalogApi";
 import { useAsync, useDocumentTitle } from "../lib/hooks";
-import { Img, pad2, roman, useVariant } from "../components/shared";
+import { Img, Price, pad2, roman, useVariant } from "../components/shared";
 import { CoverPreview } from "../magazine/templates/Pages";
-import { BRAND } from "../variants";
+import { BRAND, inquiryMessage } from "../variants";
 
 /* ================= Colecciones ================= */
 export function CollectionsPage() {
@@ -102,6 +103,56 @@ export function WorkPage() {
 }
 
 /* ================= Contacto ================= */
+
+/** Si se llega desde «Consultar esta pieza» (?pieza=id), muestra la pieza y un mensaje listo para copiar. */
+function InquiryCard() {
+  const v = useVariant();
+  const [params] = useSearchParams();
+  const id = params.get("pieza");
+  const product = useAsync(() => (id ? getProduct(id) : Promise.resolve(null)), [id]);
+  const [copied, setCopied] = useState<"ok" | "error" | null>(null);
+  if (!product) return null;
+
+  const message = inquiryMessage(product.name);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied("ok");
+    } catch {
+      setCopied("error");
+    }
+  };
+
+  return (
+    <div className="contact__card inquiry">
+      <figure className="inquiry__fig">
+        <Img id={product.images[0]} alt="" />
+      </figure>
+      <div className="inquiry__text">
+        <h2 className="contact__label">Consulta sobre</h2>
+        <p className="inquiry__name">{product.name}</p>
+        <Price product={product} />
+        <p className="inquiry__msg">{message}</p>
+        <div className="inquiry__actions">
+          <button type="button" className="btn" onClick={copy}>
+            Copiar mensaje
+          </button>
+          <Link to={`/${v}/revista/navidad-tejida?producto=${product.id}`} className="link-arrow">
+            Volver a la pieza
+          </Link>
+        </div>
+        <p className="demo-note" role="status">
+          {copied === "ok"
+            ? "Mensaje copiado. Pégalo en el canal que prefieras."
+            : copied === "error"
+              ? "No se pudo copiar automáticamente; selecciona el texto y cópialo."
+              : ""}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function ContactPage() {
   useDocumentTitle(`Contacto · ${BRAND.name}`);
   return (
@@ -114,6 +165,7 @@ export function ContactPage() {
         </p>
       </header>
       <div className="contact__grid">
+        <InquiryCard />
         <div className="contact__card contact__card--main">
           <h2 className="contact__label">WhatsApp</h2>
           <p className="contact__value">+56 9 XXXX XXXX</p>
